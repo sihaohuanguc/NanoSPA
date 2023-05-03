@@ -1,0 +1,104 @@
+#!/usr/bin/env python
+# -*- coding: utf-8
+import argparse
+from nanospa.alignment import align
+from nanospa.remove_intron import re_in
+from nanospa.extract_features import ex_fe
+from nanospa.prediction_psU import pred
+from nanospa.preprocess_m6A import pre_m6A
+from nanospa.prediction_m6A import pred_m6A
+
+__author__ = "Sihao Huang"
+__copyright__ = ""
+__credits__ = []
+__license__ = "GPL 2.0"
+__version__ = "1.0"
+__maintainer__ = "Sihao Huang"
+__email__ = "sihaohuang1024@gmail.com"
+__status__ = "Development"
+
+p=argparse.ArgumentParser(description="This package is used to identify the N6-Methyladenosine and pseudouridine sites from Nanopore RNA direct sequencing data.")
+p.add_argument("Mode",type=str,help="Running mode. Should be one from 'alignment', 'remove_intron', 'extract_features', 'prediction_psU', 'preprocess_m6A' and 'prediction_m6A'.")
+p.add_argument("--input","-i",type=str,help="Your input file of a step.")
+p.add_argument("--output","-o",type=str,help="Your output file of a step.")
+p.add_argument("--reference","-r",type=str,help="Your reference file for the alignment step.")
+
+args=p.parse_args()
+
+if args.Mode:
+    run_type=args.Mode
+
+    if run_type=="alignment":
+        if args.input and args.reference:
+            in_folder_name=args.input
+            ref_name=args.reference
+            if args.output:
+                out_name=args.output
+                align(in_folder_name,ref_name,out_name)
+            else:
+                align(in_folder_name,ref_name,False)
+        else:
+            print("Required argument(s) missing.")
+
+    elif run_type=="remove_intron":
+        if args.input:
+            re_in(args.input)
+        else:
+            re_in(False)
+
+    elif run_type=="extract_features":
+        if args.input:
+            in_folder_name=args.input
+            if args.output:
+                ex_fe(in_folder_name,args.output)
+            else:
+                ex_fe(in_folder_name,False)
+        else:
+            if args.output:
+                ex_fe(False,args.output)
+            else:
+                ex_fe(False,False)
+
+    elif run_type=="preprocess_m6A":
+        if args.input:
+            in_file_name=args.input
+            if args.output:
+                pre_m6A(in_file_name,args.output)
+            else:
+                pre_m6A(in_file_name,False)
+        else:
+            if args.output:
+                pre_m6A(False,args.output)
+            else:
+                pre_m6A(False,False)
+
+    elif run_type=="prediction_psU":
+        if args.input:
+            in_file_name=args.input
+            if args.output:
+                pred(in_file_name,args.output)
+            else:
+                pred(in_file_name,False)
+        else:
+            if args.output:
+                pred(False,args.output)
+            else:
+                pred(False,False)
+
+    elif run_type=="prediction_m6A":
+        if args.input:
+            in_file_name=args.input
+            if args.output:
+                pred_m6A(in_file_name,args.output)
+            else:
+                pred_m6A(in_file_name,False)
+        else:
+            if args.output:
+                pred_m6A(False,args.output)
+            else:
+                pred_m6A(False,False)
+
+    else:
+        print("Input mode wrong.")
+
+
